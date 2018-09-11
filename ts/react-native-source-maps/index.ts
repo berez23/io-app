@@ -11,7 +11,7 @@
 
 import { Platform } from "react-native";
 import RNFS from "react-native-fs";
-import SourceMap, { MappedPosition } from "source-map";
+import SourceMap, { NullableMappedPosition } from "source-map";
 import StackTrace from "stacktrace-js";
 
 export interface ISourceMapsOptions {
@@ -25,7 +25,7 @@ interface ISourcePosition {
   columnNumber: number;
 }
 
-export type SourceMapper = (row: ISourcePosition) => MappedPosition;
+export type SourceMapper = (row: ISourcePosition) => NullableMappedPosition;
 
 /**
  * Creates a SourceMapper from the provided options
@@ -49,9 +49,9 @@ export async function createSourceMapper(
 
   const mapContents = await RNFS.readFile(path, "utf8");
   const sourceMaps = JSON.parse(mapContents);
-  const mapConsumer = new SourceMap.SourceMapConsumer(sourceMaps);
+  const mapConsumer = await new SourceMap.SourceMapConsumer(sourceMaps);
 
-  function mapper(row: ISourcePosition): MappedPosition {
+  function mapper(row: ISourcePosition): NullableMappedPosition {
     return mapConsumer.originalPositionFor({
       line: row.lineNumber,
       column: row.columnNumber
