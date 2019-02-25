@@ -23,21 +23,11 @@ import maskedInputTheme from "./components/MaskedInput";
 import messageDetailsInfoComponentTheme from "./components/MessageDetailsInfoComponent";
 import preferenceItemTheme from "./components/PreferenceItem";
 import screenHeaderTheme from "./components/ScreenHeader";
-import tabContainerTheme from "./components/TabContainer";
-import tabHeadingTheme from "./components/TabHeading";
 import textTheme from "./components/Text";
 import textWithIconTheme from "./components/TextWithIcon";
 import viewTheme from "./components/View";
 import { Theme } from "./types";
 import variables from "./variables";
-
-import markdownBlockQuoteTheme from "./components/markdown/MarkdownBlockQuote";
-import markdownBrTheme from "./components/markdown/MarkdownBr";
-import markdownDemoTheme from "./components/markdown/MarkdownDemo";
-import markdownHeadingTheme from "./components/markdown/MarkdownHeading";
-import markdownListTheme from "./components/markdown/MarkdownList";
-import markdownParagraphTheme from "./components/markdown/MarkdownParagraph";
-import markdownTextTheme from "./components/markdown/MarkdownText";
 
 const theme = (): Theme => {
   const nbTheme = getTheme(variables);
@@ -84,12 +74,6 @@ const theme = (): Theme => {
     "NativeBase.ViewNB": {
       ...viewTheme()
     },
-    "NativeBase.TabHeading": {
-      ...tabHeadingTheme()
-    },
-    "NativeBase.TabContainer": {
-      ...tabContainerTheme()
-    },
     "UIComponent.MessageDetailsInfoComponent": {
       ...messageDetailsInfoComponentTheme()
     },
@@ -110,28 +94,6 @@ const theme = (): Theme => {
     },
     "UIComponent.MaskedInput": {
       ...maskedInputTheme()
-    },
-    // Markdown
-    "UIComponent.MarkdownBlockQuote": {
-      ...markdownBlockQuoteTheme()
-    },
-    "UIComponent.MarkdownBr": {
-      ...markdownBrTheme()
-    },
-    "UIComponent.MarkdownDemo": {
-      ...markdownDemoTheme()
-    },
-    "UIComponent.MarkdownHeading": {
-      ...markdownHeadingTheme()
-    },
-    "UIComponent.MarkdownList": {
-      ...markdownListTheme()
-    },
-    "UIComponent.MarkdownParagraph": {
-      ...markdownParagraphTheme()
-    },
-    "UIComponent.MarkdownText": {
-      ...markdownTextTheme()
     }
   };
 

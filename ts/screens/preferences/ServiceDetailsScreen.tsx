@@ -35,6 +35,7 @@ import H4 from "../../components/ui/H4";
 import customVariables from "../../theme/variables";
 
 import { logosForService } from "../../utils/services";
+import { showToast } from "../../utils/showToast";
 
 type NavigationParams = Readonly<{
   service: ServicePublic;
@@ -101,8 +102,12 @@ class ServiceDetailsScreen extends React.Component<Props, State> {
 
   public componentWillReceiveProps(nextProps: Props) {
     if (pot.isError(this.props.profile) !== pot.isError(nextProps.profile)) {
-      // in case of new or resolved errors while updating the profile, we reset
-      // the UI to match the state of the profile preferences
+      // in case of new or resolved errors while updating the profile, we show a toast and
+      // reset the UI to match the state of the profile preferences
+      showToast(
+        I18n.t("serviceDetail.onUpdateEnabledChannelsFailure"),
+        "danger"
+      );
       this.setState({
         uiEnabledChannels: getEnabledChannelsForService(
           nextProps.profile,
@@ -319,11 +324,7 @@ class ServiceDetailsScreen extends React.Component<Props, State> {
               </Col>
             </Row>
             <View spacer={true} large={true} />
-            {description && (
-              <Markdown lazyOptions={{ lazy: true, animated: true }}>
-                {description}
-              </Markdown>
-            )}
+            {description && <Markdown animated={true}>{description}</Markdown>}
             {description && <View spacer={true} large={true} />}
             {tos_url && (
               <TouchableOpacity

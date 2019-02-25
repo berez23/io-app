@@ -1,6 +1,6 @@
 import { DateFromISOString } from "io-ts-types";
 import * as pot from "italia-ts-commons/lib/pot";
-import { Text, View } from "native-base";
+import { CheckBox, Text, View } from "native-base";
 import * as React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Col, Grid, Row } from "react-native-easy-grid";
@@ -8,7 +8,6 @@ import { Col, Grid, Row } from "react-native-easy-grid";
 import { ServicePublic } from "../../../definitions/backend/ServicePublic";
 import I18n from "../../i18n";
 import { MessageState } from "../../store/reducers/entities/messages/messagesById";
-import { MessageUIStates } from "../../store/reducers/entities/messages/messagesUIStatesById";
 import { GlobalState } from "../../store/reducers/types";
 import variables from "../../theme/variables";
 import { convertDateToWordDistance } from "../../utils/convertDateToWordDistance";
@@ -17,10 +16,12 @@ import MessageCTABar from "./MessageCTABar";
 
 type OwnProps = {
   messageState: MessageState;
-  messageUIStates: MessageUIStates;
   paymentByRptId: GlobalState["entities"]["paymentByRptId"];
   service: pot.Pot<ServicePublic, Error>;
-  onItemPress?: (messageId: string) => void;
+  onPress: (id: string) => void;
+  onLongPress: (id: string) => void;
+  isSelectionModeEnabled: boolean;
+  isSelected: boolean;
 };
 
 type Props = OwnProps;
@@ -81,6 +82,10 @@ const styles = StyleSheet.create({
 
   ctaBarContainer: {
     marginBottom: 16
+  },
+
+  selectionCheckbox: {
+    left: 0
   }
 });
 
@@ -112,19 +117,21 @@ export class MessageListItemComponent extends React.Component<Props> {
         : undefined;
     return (
       this.props.service.kind !== nextProps.service.kind ||
-      this.props.messageUIStates.read !== nextProps.messageUIStates.read ||
+      this.props.messageState.isRead !== nextProps.messageState.isRead ||
       (rptId !== undefined &&
-        this.props.paymentByRptId[rptId] !== nextProps.paymentByRptId[rptId])
+        this.props.paymentByRptId[rptId] !== nextProps.paymentByRptId[rptId]) ||
+      this.props.isSelectionModeEnabled !== nextProps.isSelectionModeEnabled ||
+      this.props.isSelected !== nextProps.isSelected
     );
   }
 
   public render() {
     const {
       messageState,
-      onItemPress,
       paymentByRptId,
-      messageUIStates,
-      service
+      service,
+      isSelectionModeEnabled,
+      isSelected
     } = this.props;
 
     const { message, meta } = messageState;
@@ -160,16 +167,16 @@ export class MessageListItemComponent extends React.Component<Props> {
           I18n.t("messages.noContent")
         );
 
-    const onItemPressHandler = onItemPress
-      ? () => onItemPress(meta.id)
-      : undefined;
-
     return (
-      <TouchableOpacity key={meta.id} onPress={onItemPressHandler}>
+      <TouchableOpacity
+        key={meta.id}
+        onPress={this.handlePress}
+        onLongPress={this.handleLongPress}
+      >
         <View style={styles.itemContainer}>
           <Grid style={styles.grid}>
             <Row style={styles.serviceRow}>
-              {!messageUIStates.read && (
+              {!messageState.isRead && (
                 <Col style={styles.readCol}>
                   <IconFont
                     name="io-new"
@@ -183,7 +190,7 @@ export class MessageListItemComponent extends React.Component<Props> {
                 <Text
                   style={[
                     styles.serviceText,
-                    !messageUIStates.read ? styles.serviceTextNew : undefined
+                    !messageState.isRead ? styles.serviceTextNew : undefined
                   ]}
                   leftAlign={true}
                   bold={true}
@@ -202,11 +209,19 @@ export class MessageListItemComponent extends React.Component<Props> {
                 <Text leftAlign={true}>{subject}</Text>
               </Col>
               <Col size={1} style={styles.iconContainer}>
-                <IconFont
-                  name="io-right"
-                  size={24}
-                  color={variables.contentPrimaryBackground}
-                />
+                {isSelectionModeEnabled ? (
+                  <CheckBox
+                    onPress={this.handleLongPress}
+                    checked={isSelected}
+                    style={styles.selectionCheckbox}
+                  />
+                ) : (
+                  <IconFont
+                    name="io-right"
+                    size={24}
+                    color={variables.contentPrimaryBackground}
+                  />
+                )}
               </Col>
             </Row>
             <Row>
@@ -224,4 +239,12 @@ export class MessageListItemComponent extends React.Component<Props> {
       </TouchableOpacity>
     );
   }
+
+  private handlePress = () => {
+    this.props.onPress(this.props.messageState.meta.id);
+  };
+
+  private handleLongPress = () => {
+    this.props.onLongPress(this.props.messageState.meta.id);
+  };
 }

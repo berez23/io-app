@@ -2,6 +2,8 @@
 global:
   localization:
     decimalSeparator: "."
+  dateFormats:
+    dayAndMonth: "dddd D MMMM"
   jserror:
     title: Unexpected error occurred
     message: We have reported this to our team! Please close the app and start again!
@@ -25,6 +27,7 @@ global:
     profile: profile
   actions:
     retry: An error occurred, please retry
+    search: Search
   remoteStates:
     loading: Loading...
     notAvailable: Non available
@@ -64,6 +67,7 @@ profile:
     screenTitle: Profile
     screenSubtitle: Here you will find information and data related to security, identity, account and personal data.
     logout: Logout/Exit
+    forgetCurrentSession: Forget current session
     privacy:
       title: Privacy
       description: Export data, delete account
@@ -190,6 +194,15 @@ onboarding:
     confirmInvalid: the two pins do not match
   resetConfirm: Are you sure you want to interrupt the IO activation?
     You can do this again at any time logging in with your SPID account.
+  fingerprint:
+    headerTitle: Activation
+    body:
+      enrolledText: From this moment on you can access this app also using {{biometryType}}. You can disable this function from security preference pane of this app.
+      enrolledType:
+        fingerprint: Fingerprint
+        faceId: FaceID
+        touchId: TouchID
+      notEnrolledText: No enabled biometric access has been found. If you want you can enable it on this device and then enable it from security preference pane of this app.
 pin_login:
   pin:
     pinInfo: Enter the PIN
@@ -427,19 +440,31 @@ messages:
     one: You have 1 message
     other: You have {{count}} messages
   tab:
-    all: All
+    inbox: Inbox
     deadlines: Deadlines
+    archive: Archive
   contentTitle: Messages
   refresh: Pull down to refresh
   loading: Loading Messages...
   yesterday: yesterday
   cta:
+    archive: Archive
+    unarchive: Unarchive
     pay: Pay € {{amount}}
     paid: Paid € {{amount}}
     reminder: Reminder
-    reminderTitle: "Reminder for: {{subject}}"
+    reminderCalendarSelect: In which calendar you want to add the reminder?
+    reminderTitle: "Reminder for: {{title}}"
+    reminderAddSuccess: "Reminder added"
+    reminderAddFailure: "Error adding reminder, please retry"
+    reminderRemoveSuccess: "Reminder removed"
+    reminderRemoveFailure: "Error removing reminder, please retry"
+    errors:
+      fetchCalendars: Error fetching calendars
   unknownSender: Unknown sender
   noContent: Content not available
+  search:
+    invalidSearchBarText: Enter at least three characters in the search bar.
 messageDetails:
   headerTitle: Message
   emptyMessage: No content
@@ -495,6 +520,7 @@ services:
   contactPhone: Phone
 serviceDetail:
   headerTitle: "Service details"
+  onUpdateEnabledChannelsFailure: "There was a temporary problem while saving preferences, please retry."
 identification:
   message: "Enter the PIN"
   resetPinMessage: To reset your PIN you will have to login again with your SPID account.
